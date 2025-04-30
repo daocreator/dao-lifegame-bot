@@ -1,23 +1,20 @@
-import os
-from aiogram import Bot, Dispatcher, types
-from aiogram.utils import executor
-from dotenv import load_dotenv
+bot = Bot(token=BOT_TOKEN, parse_mode=ParseMode.HTML)
+dp = Dispatcher()
 
-load_dotenv()
 
-BOT_TOKEN = os.getenv("BOT_TOKEN")
-OWNER_ID = int(os.getenv("OWNER_ID"))
+@dp.message(CommandStart())
+async def start_handler(message: Message):
+    await message.answer(f"Привет, {hbold(message.from_user.first_name)}! Я бот DAO LifeGame. Готов к запуску ☀️")
 
-bot = Bot(token=BOT_TOKEN)
-dp = Dispatcher(bot)
 
-@dp.message_handler(commands=["start"])
-async def start_handler(message: types.Message):
-    await message.reply("Привет! Я бот DAO LifeGame. Готов к работе.")
-
-@dp.message_handler(commands=["день"])
-async def day_handler(message: types.Message):
-    await message.reply("Сегодняшняя дата по DAO-календарю: ...")
+@dp.message(Command("день"))
+async def day_handler(message: Message):
+    await message.answer("🗓 Сегодняшняя дата по DAO-календарю: (здесь будет вставка позже)")
 
 if __name__ == "__main__":
-    executor.start_polling(dp, skip_updates=True)
+    import asyncio
+
+    async def main():
+        await dp.start_polling(bot)
+
+    asyncio.run(main())
